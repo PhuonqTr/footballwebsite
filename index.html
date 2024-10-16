@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Đồ Đá Banh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input, select {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>In Đồ Đá Banh</h1>
+    <form id="player-form">
+        <input type="text" id="name" placeholder="Tên cầu thủ" required>
+        <input type="number" id="number" placeholder="Số áo" required>
+        <select id="size" required>
+            <option value="" disabled selected>Chọn kích cỡ</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+        </select>
+        <button type="submit">Thêm cầu thủ</button>
+    </form>
+    <h2>Danh sách cầu thủ:</h2>
+    <ul id="player-list"></ul>
+
+    <script>
+        document.getElementById('player-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const number = document.getElementById('number').value;
+            const size = document.getElementById('size').value;
+
+            // Lấy danh sách cầu thủ từ Local Storage
+            let players = JSON.parse(localStorage.getItem('players')) || [];
+
+            // Kiểm tra trùng số áo
+            if (players.some(player => player.number == number)) {
+                alert('Số áo đã bị trùng');
+                return;
+            }
+
+            // Thêm cầu thủ mới vào danh sách
+            players.push({ name, number, size });
+            localStorage.setItem('players', JSON.stringify(players));
+
+            // Cập nhật danh sách hiển thị
+            displayPlayers();
+            this.reset();
+        });
+
+        function displayPlayers() {
+            const playerList = document.getElementById('player-list');
+            playerList.innerHTML = '';
+            const players = JSON.parse(localStorage.getItem('players')) || [];
+            players.forEach(player => {
+                const li = document.createElement('li');
+                li.textContent = `${player.name} - Số áo: ${player.number} - Kích cỡ: ${player.size}`;
+                playerList.appendChild(li);
+            });
+        }
+
+        // Hiển thị danh sách cầu thủ khi trang được tải
+        displayPlayers();
+    </script>
+</body>
+</html>
